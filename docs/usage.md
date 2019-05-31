@@ -1,17 +1,23 @@
-# uct-cbio/16S-rDNA-dada2-pipeline Usage
+# ![kviljoen/16S-rDNA-dada2-pipeline](/assets/cbio_logo.png)
+# Pipeline usage
 
 ## General Nextflow info
-Nextflow handles job submissions on different environments (PBS in our case), and supervises running the jobs. Thus the Nextflow process must run until the pipeline is finished. We recommend that you put the process running in the background through `screen` / `tmux` or similar tool. Alternatively you can run nextflow within a cluster job submitted your job scheduler.
+Nextflow handles job submissions on different environments (PBS in our case), and supervises running the jobs. Thus the Nextflow process must run until the pipeline is finished. We recommend that you put the process running in the background through `screen` or a similar tool. 
 
-It is recommended to limit the Nextflow Java virtual machines memory. We recommend adding the following line to your environment (typically in `~/.bashrc` or `~./bash_profile`):
+On UCT's hex cluster you would start a `screen` session from the headnode and then start and interactive job. Once you are on a worker node you can enter the typical command for running the pipeline specified below.
+
+It is recommended that you limit the Nextflow Java virtual machine's memory usage by adding the following line to your environment (typically in `~/.bashrc` or `~./bash_profile`):
 
 ```bash
 NXF_OPTS='-Xms1g -Xmx4g'
 ```
-For University of Cape Town users who will be running Nextflow on UCT's HPC (hex), you need to include the following two lines in your `~/.bachrc`:
+For University of Cape Town users who will be running Nextflow on UCT's HPC (hex), you also need to include the following lines in your `~/.bashrc`:
 
+```bash
+export JAVA_HOME=/opt/exp_soft/java/jdk1.8.0_31/
 JAVA_CMD=/opt/exp_soft/java/jdk1.8.0_31/bin/java
 export PATH=$PATH:/opt/exp_soft/cbio/nextflow
+```
 
 ## Running the pipeline
 The typical command for running the pipeline is as follows:
@@ -120,7 +126,7 @@ Each step in the pipeline has a default set of requirements for number of CPUs, 
 ### Custom resource requests
 Wherever process-specific requirements are set in the pipeline, the default value can be changed by creating a custom config file. See the files in [`conf`](../conf) for examples.
 
-## General line parameters
+## General command line options
 ### `--outdir`
 The output directory where the results will be saved.
 
@@ -154,7 +160,7 @@ process.$fastqc.errorStrategy = 'terminate'
 
 ### `--max_memory`
 Use to set a top-limit for the default memory requirement for each process.
-Should be a string in the format integer-unit. eg. `--max_memory '8.GB'``
+Should be a string in the format integer-unit. eg. `--max_memory '8.GB'`
 
 ### `--max_time`
 Use to set a top-limit for the default time requirement for each process.
@@ -168,11 +174,6 @@ Should be a string in the format integer-unit. eg. `--max_cpus 1`
 Set to receive plain-text e-mails instead of HTML formatted.
 
 ### `--clusterOptions`
-Submit arbitrary cluster scheduler options (not available for all config profiles). For instance, you could use `--clusterOptions '-p devcore'` to run on the development node (though won't work with default process time requests).
+The nextflow clusterOptions directive allows the usage of any native configuration option accepted by your cluster submit command. You can use it to request non-standard resources or use settings that are specific to your cluster and not supported out of the box by Nextflow. 
 
 
----
-
-[![UCT CBIO](/conf/cbio_logo.png)](http://www.cbio.uct.ac.za/)
-
----
